@@ -7,18 +7,18 @@
 class UGameplayEffect;
 
 UENUM(BlueprintType)
-enum class EEffectApplicationPolicy : UINT8
+enum class EEffectApplicationPolicy : UINT8//Gameplay Effect 应该什么时候应用
 {
-	ApplyOnOverlap,
-	ApplyOnEndOverlap,
-	DoNotApply
+	ApplyOnOverlap,//进入碰撞范围的时候应用
+	ApplyOnEndOverlap,//离开碰撞范围的时候应用
+	DoNotApply//这个 Effect Actor 不自动应用这个 Gameplay Effect
 };
 
 UENUM(BlueprintType)
-enum class EEffectRemovalPolicy : UINT8
+enum class EEffectRemovalPolicy : UINT8//Gameplay Effect 应该什么时候移除
 {
-	RemoveOnEndOverlap,
-	DoNotRemove
+	RemoveOnEndOverlap,//这个是当结束重叠时 移除GameplayEffect
+	DoNotRemove//这个就是字面意思 不移除GameplayEffect
 };
 
 UCLASS()
@@ -49,7 +49,7 @@ protected:
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
+	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;//Instant Gameplay Effect 应该什么时候应用
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
