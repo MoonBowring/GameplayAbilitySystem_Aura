@@ -2,8 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffectTypes.h"
 #include "AuraEffectActor.generated.h"
 
+class UAbilitySystemComponent;
+struct FActiveGameplayEffectHandle;
 class UGameplayEffect;
 
 UENUM(BlueprintType)
@@ -63,6 +66,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 	
+	//这个东西就是暴露给蓝图的 让设计师判断是否在离开范围时取消效果 默认是移除的
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectRemovalPolicy InfiniteEffectRemovalPolicy = EEffectRemovalPolicy::RemoveOnEndOverlap;
+	
+	//这里的TMap键是 ActiveGameplayEffect句柄 值是 AbilitySystemComponent 这样就可以不用从 TargetActor 再去获取了
+	//这个TMap的作用就是将句柄映射到能力系统组件
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 };
