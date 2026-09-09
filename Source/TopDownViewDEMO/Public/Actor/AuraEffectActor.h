@@ -9,6 +9,7 @@ class UAbilitySystemComponent;
 struct FActiveGameplayEffectHandle;
 class UGameplayEffect;
 
+//这个宏是应用规则
 UENUM(BlueprintType)
 enum class EEffectApplicationPolicy : UINT8//Gameplay Effect 应该什么时候应用
 {
@@ -17,6 +18,7 @@ enum class EEffectApplicationPolicy : UINT8//Gameplay Effect 应该什么时候�
 	DoNotApply//这个 Effect Actor 不自动应用这个 Gameplay Effect
 };
 
+//这个宏是移除规则
 UENUM(BlueprintType)
 enum class EEffectRemovalPolicy : UINT8//Gameplay Effect 应该什么时候移除
 {

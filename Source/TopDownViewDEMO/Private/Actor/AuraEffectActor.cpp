@@ -40,6 +40,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	
 	const bool bIsInfinite = (EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite);//初始值为永久生效
 	
+	//判断初始值是否为永久生效 然后判断是不是可以移除的
 	//我们只有在有要移除效果的打算才这么做 如果不移除效果 那么就没有必要保存相应的句柄
 	if (bIsInfinite && InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
@@ -79,8 +80,10 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
 	}
 	
+	//当这个效果需要结束时移除时
 	if (InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
+		//首先获取到需要移除的玩家的ASC
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 		if (!IsValid(TargetASC)) return;
 		
@@ -93,6 +96,8 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 				HandlesToRemove.Add(HandlePair.Key);
 			}
 		}
+		
+		//从 Map 中删除这些 Handle 对应的记录
 		for (FActiveGameplayEffectHandle& Handle : HandlesToRemove)
 		{
 			ActiveEffectHandles.FindAndRemoveChecked(Handle);

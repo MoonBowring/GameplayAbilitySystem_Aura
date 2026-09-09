@@ -24,6 +24,9 @@ public:
 	//告诉虚幻 这个AttributeSet里哪些属性需要真正进入网络复制系统
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
+	//无论那个属性发生变化 无论是游戏效果引起的 还是直接赋值 这个函数都会被触发响应
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	
 	//Health是一个需要网络复制Replication的属性 而且客户端收到Health更新后 要调用OnRep_Health()这个函数
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
 	FGameplayAttributeData Health;
