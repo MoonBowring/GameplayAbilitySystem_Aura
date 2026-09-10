@@ -3,6 +3,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Character/AuraCharacter.h"
 
 AAuraEffectActor::AAuraEffectActor()
 {
@@ -39,6 +40,8 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 	
 	const bool bIsInfinite = (EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite);//初始值为永久生效
+	
+	IAbilitySystemInterface* CH = Cast<IAbilitySystemInterface>(TargetActor);
 	
 	//判断初始值是否为永久生效 然后判断是不是可以移除的
 	//我们只有在有要移除效果的打算才这么做 如果不移除效果 那么就没有必要保存相应的句柄
@@ -78,6 +81,7 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	}
 	
 	//当这个效果需要结束时移除时

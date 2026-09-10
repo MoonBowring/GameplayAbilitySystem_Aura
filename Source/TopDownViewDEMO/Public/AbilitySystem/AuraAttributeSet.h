@@ -27,6 +27,9 @@ public:
 	//无论那个属性发生变化 无论是游戏效果引起的 还是直接赋值 这个函数都会被触发响应
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	
+	//现在 GameplayEffect 已经修改完属性了 现在要开始检查和处理结果了
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+	
 	//Health是一个需要网络复制Replication的属性 而且客户端收到Health更新后 要调用OnRep_Health()这个函数
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
 	FGameplayAttributeData Health;
