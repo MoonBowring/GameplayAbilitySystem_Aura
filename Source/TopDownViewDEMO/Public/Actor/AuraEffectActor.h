@@ -75,4 +75,7 @@ protected:
 	//这里的TMap键是 ActiveGameplayEffect句柄 值是 AbilitySystemComponent 这样就可以不用从 TargetActor 再去获取了
 	//这个TMap的作用就是将句柄映射到能力系统组件
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	float ActorLevel = 1.f;
 };

@@ -34,7 +34,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	EffectContextHandle.AddSourceObject(this);
 	
 	//获取一个可直接用于其他对象的输出游戏效果规范
-	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
 	//这个 ApplyGameplayEffectSpecToSelf 会返回一个句柄来着 就比如说如果一个技能需要创建一个活跃效果 然后销毁它所创建的那个特定效果 就必须通过此句柄、指针或活跃列表中的索引来实现
 	//单纯的指针或索引是不够的 应为这些在客户端和服务器之间是不同步的
 	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
