@@ -14,4 +14,9 @@ class TOPDOWNVIEWDEMO_API UAuraAbilitySystemComponent : public UAbilitySystemCom
 {
 	GENERATED_BODY()
 	
+public:
+	void AbilityActorInfoSet();
+	
+protected:
+	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 };

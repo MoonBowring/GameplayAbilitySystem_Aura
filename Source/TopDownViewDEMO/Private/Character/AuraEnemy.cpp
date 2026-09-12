@@ -36,7 +36,15 @@ void AAuraEnemy::UnHighlightActor()
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	InitAbilityActorInfo();
+}
+
+void AAuraEnemy::InitAbilityActorInfo()
+{
+	Super::InitAbilityActorInfo();
+	
 	//OwnerActor 这个ASC属于谁    AvatarActor 这个ASC当前附着/表现在哪个实体身上
 	//因为 PlayerState 知道“我拥有 ASC”，并不代表 ASC 自己就知道“我的 Owner 是谁”
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }

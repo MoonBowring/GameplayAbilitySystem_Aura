@@ -28,4 +28,6 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;//角色属性集
+	
+	virtual void InitAbilityActorInfo();
 };

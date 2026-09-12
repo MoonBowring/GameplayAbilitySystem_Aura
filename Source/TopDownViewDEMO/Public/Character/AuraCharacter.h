@@ -25,5 +25,5 @@ public:
 	virtual void OnRep_PlayerState() override;
 	
 private:
-	void InitAbilityActorInfo();//初始化能力角色信息
+	virtual  void InitAbilityActorInfo() override;//初始化能力角色信息
 };
