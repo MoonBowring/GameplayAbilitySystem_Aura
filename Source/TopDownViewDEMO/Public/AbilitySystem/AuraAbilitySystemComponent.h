@@ -15,6 +15,7 @@ class TOPDOWNVIEWDEMO_API UAuraAbilitySystemComponent : public UAbilitySystemCom
 	GENERATED_BODY()
 	
 public:
+	//ActorInfo 设置完成以后要做的事情
 	void AbilityActorInfoSet();
 	
 protected:

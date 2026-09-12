@@ -5,6 +5,7 @@
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
+	//以后这个 ASC 收到 Gameplay Effect 的时候，调用我自己的 EffectApplied()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
 }
 
