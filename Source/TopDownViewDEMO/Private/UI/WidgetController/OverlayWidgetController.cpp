@@ -37,10 +37,16 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			for (const FGameplayTag& Tag : AssetTags)//把 TagContainer 里的每一个 GameplayTag 一个一个拿出来
 			{
-				const FString Msg = FString::Printf(TEXT("GE Tag: %s"), *Tag.ToString());
-				GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Blue, Msg);
-				
-				FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+				//获取与指定标签名对应的游戏标签对象
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				//MatchesTag 判断此标签是否与要检查的标签相匹配 同时展开其父类标签 也就是判断当前这个 Tag 是不是属于 Message 这一大类
+				//因为一个 GameplayEffect 可能带很多种 Tag 但是我只想处理 Message.xxx
+				if (Tag.MatchesTag(MessageTag))
+				{
+					//拿着这个 Tag 去 UIDataTable 找对应的一行
+					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+					MessageWidgetRowSignature.Broadcast(*Row);
+				}
 			}
 		}
 	);	
