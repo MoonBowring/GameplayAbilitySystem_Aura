@@ -35,5 +35,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 	
+	//初始化主要属性
 	void InitializePrimaryAttributes() const;
 };

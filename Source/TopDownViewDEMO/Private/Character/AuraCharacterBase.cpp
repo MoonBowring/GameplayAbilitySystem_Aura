@@ -29,8 +29,9 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 
 void AAuraCharacterBase::InitializePrimaryAttributes() const
 {
-	check(GetAbilitySystemComponent());
+	check(IsValid(GetAbilitySystemComponent()));
 	check(DefaultPrimaryAttributes);
+	//角色出生后，拿到 初始属性 GameplayEffect 创建这一次执行的 Spec 然后把它应用到自己身上
 	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttributes, 1.f, ContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
