@@ -24,6 +24,10 @@ public:
 	//当服务器通过网络复制把玩家状态赋值给客户端的时候 客户端触发OnRep_PlayerState 也就是说服务器把这个玩家状态发给我了
 	virtual void OnRep_PlayerState() override;
 	
+	/** Combat Interface*/
+	virtual int32 GetPlayerLevel() override;
+	/** End Combat Interface*/
+	
 private:
 	virtual  void InitAbilityActorInfo() override;//初始化能力角色信息
 };

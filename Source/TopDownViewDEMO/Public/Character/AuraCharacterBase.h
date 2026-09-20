@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -10,7 +11,7 @@ class UAttributeSet;
 class UGameplayEffect;
 
 UCLASS(Abstract)
-class TOPDOWNVIEWDEMO_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
+class TOPDOWNVIEWDEMO_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
