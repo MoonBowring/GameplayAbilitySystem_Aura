@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 
+//建立集中保存标签的结构
+
 struct FAuraGameplayTags
 {
 public:
