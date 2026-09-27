@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
+class UAttributeMenuWidgetController;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UAuraUserWidget;
@@ -24,12 +25,11 @@ class TOPDOWNVIEWDEMO_API AAuraHUD : public AHUD
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;//这个是游戏运行时 真正创建出来的对象 可以想象成图纸造出来的东西
 	
 	//如果我还没有 OverlayWidgetController，就创建一个并初始化；如果已经有了，就直接把原来的返回给你
 	UFUNCTION()
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
+	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
 	
 	void InitOverlay(APlayerController* PC,APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 	
@@ -37,6 +37,9 @@ protected:
 	
 	
 private:
+	UPROPERTY()
+	TObjectPtr<UAuraUserWidget> OverlayWidget;//这个是游戏运行时 真正创建出来的对象 可以想象成图纸造出来的东西
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;//这个保存的是我要创建哪一种 Widget 可以把它想象成图纸
 	
@@ -45,4 +48,10 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;//我要创建哪一种 OverlayWidgetController 可以把它想象成施工方案
+	
+	UPROPERTY()
+	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
 };
