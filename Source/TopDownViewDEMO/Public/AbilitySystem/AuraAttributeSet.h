@@ -13,6 +13,10 @@
  GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
  GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+//typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 //这个宏就相当于这次 GameplayEffect 的信息档案
 USTRUCT()
 struct FEffectProperties
@@ -71,6 +75,7 @@ public:
 	//现在 GameplayEffect 已经修改完属性了 现在要开始检查和处理结果了 也就是说 当 GameplayEffect 已经修改完 Attribute 之后，进入这里处理后续逻辑
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 	/*
 	 * 主要属性
 	 */
