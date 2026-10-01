@@ -56,15 +56,13 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
-/**
- * 
- */
 UCLASS()
 class TOPDOWNVIEWDEMO_API UAuraAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 public:
 	UAuraAttributeSet();
+	
 	//告诉虚幻 这个AttributeSet里哪些属性需要真正进入网络复制系统
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
@@ -75,7 +73,10 @@ public:
 	//现在 GameplayEffect 已经修改完属性了 现在要开始检查和处理结果了 也就是说 当 GameplayEffect 已经修改完 Attribute 之后，进入这里处理后续逻辑
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
+	//这个 map 就是 通过 Tag 来寻找 FGameplayAttribute 
+	//建立一张 GameplayTag → 对应 Attribute 的映射表，而且这个映射表里存的是‘怎么获取这个 Attribute’的函数
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
+	
 	/*
 	 * 主要属性
 	 */
@@ -101,43 +102,43 @@ public:
 	 */
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Primary Attributes")
-	FGameplayAttributeData Armor;
+	FGameplayAttributeData Armor;//防御力
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category = "Primary Attributes")
-	FGameplayAttributeData ArmorPenetration;
+	FGameplayAttributeData ArmorPenetration;//防御穿透
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category = "Primary Attributes")
-	FGameplayAttributeData BlockChance;
+	FGameplayAttributeData BlockChance;//格挡几率
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category = "Primary Attributes")
-	FGameplayAttributeData CriticalHitChance;
+	FGameplayAttributeData CriticalHitChance;//暴击几率
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category = "Primary Attributes")
-	FGameplayAttributeData CriticalHitDamage;
+	FGameplayAttributeData CriticalHitDamage;//暴击伤害
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Primary Attributes")
-	FGameplayAttributeData CriticalHitResistance;
+	FGameplayAttributeData CriticalHitResistance;//暴击抗性
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "Primary Attributes")
-	FGameplayAttributeData HealthRegeneration;
+	FGameplayAttributeData HealthRegeneration;//生命回复
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category = "Primary Attributes")
-	FGameplayAttributeData ManaRegeneration;
+	FGameplayAttributeData ManaRegeneration;//法力回复
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
-	FGameplayAttributeData MaxHealth;
+	FGameplayAttributeData MaxHealth;//最大生命
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
-	FGameplayAttributeData MaxMana;
+	FGameplayAttributeData MaxMana;//最大法力
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 	
 	/*

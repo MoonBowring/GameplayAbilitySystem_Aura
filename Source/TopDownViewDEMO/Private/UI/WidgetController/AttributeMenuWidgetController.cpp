@@ -9,14 +9,14 @@
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
 	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	check(AttributeInfo);
 	for (auto& Pair : AS->TagsToAttributes)
 	{
+		//当属性值发生变化时进行注册
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
-		[this, Pair, AS](const FOnAttributeChangeData& Data)
+		[this, Pair](const FOnAttributeChangeData& Data)
 		{
-			FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
-			Info.AttributeValue = Pair.Value().GetNumericValue(AS);
-			AttributeInfoDelegate.Broadcast(Info);
+			BroadcastAttributeInfo(Pair.Key, Pair.Value());
 		}
 	);
 	}
@@ -24,14 +24,21 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
+	//读取当前 Attribute
 	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
 	
 	check(AttributeInfo);
 	
 	for (auto& Pair : AS->TagsToAttributes)
 	{
-		FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
-		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
-		AttributeInfoDelegate.Broadcast(Info);
+		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
+}
+
+void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,const FGameplayAttribute& Attribute) const
+{
+	//根据 AttributeTag 来从 DA 文件中查找需要的属性
+	FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(AttributeTag);
+	Info.AttributeValue = Attribute.GetNumericValue(AttributeSet);
+	AttributeInfoDelegate.Broadcast(Info);
 }

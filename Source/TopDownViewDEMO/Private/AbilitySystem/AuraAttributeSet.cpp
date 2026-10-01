@@ -12,8 +12,10 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+	//获取到集中保存 Tag 的容器
 	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 	
+	//通过获取到的容器 和 属性 来输入到 map 当中去
 	/* 主要属性 */
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
