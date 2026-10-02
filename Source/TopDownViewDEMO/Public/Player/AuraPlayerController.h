@@ -6,10 +6,12 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+struct FGameplayTag;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
+class UAuraInputConfig;
 
 /**
  * 
@@ -39,4 +41,11 @@ private:
 	void CursorTrace();//光标的轨迹 鼠标悬停选敌系统
 	IEnemyInterface*  LastActor;//光标上一帧指向的Actor
 	IEnemyInterface* ThisActor;//光标这一阵指向的Actor
+	
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;
 };

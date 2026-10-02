@@ -33,12 +33,13 @@ void UAuraInputComponent::BindAbilityActions(const UAuraInputConfig* InputConfig
 			//如果调用者给了一个“按下时的函数”，那么就把当前这个 InputAction 的 Started 事件绑定到这个函数
 			if (PressedFunc)
 			{
+				//当 Action.InputAction 被 Started 触发时，就调用 Object 上的 PressedFunc，并且把 Action.InputTag 作为额外参数传进去
 				BindAction(Action.InputAction, ETriggerEvent::Started, Object, PressedFunc, Action.InputTag);
 			}
 			
 			if (ReleasedFunc)
 			{
-				BindAction(Action.InputAction, ETriggerEvent::Canceled, Object, ReleasedFunc, Action.InputTag);
+				BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag);
 			}
 			
 			if (HeldFunc)
