@@ -18,7 +18,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 {
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
 	{
-		//这个 1 是技能等级 后面要改的 也许应该吧 只要我记得的话 嘻嘻
+		//TODO: 这个 1 是技能等级 后面要改的 也许应该吧 只要我记得的话 嘻嘻
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		
 		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
