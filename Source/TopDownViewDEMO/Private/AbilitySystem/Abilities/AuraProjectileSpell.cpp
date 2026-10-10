@@ -35,7 +35,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		   ProjectileClass, 
 		   SpawnTransform, 
 		   GetOwningActorFromActorInfo(), 
-		   Cast<APawn>(GetOwningActorFromActorInfo()), 
+		   Cast<APawn>(GetAvatarActorFromActorInfo()), 
 		   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		
 		//TODO: 给投射物设置一个用于造成伤害的游戏效果规格(GameplayEffectSpec)
