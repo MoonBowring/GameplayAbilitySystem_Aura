@@ -12,7 +12,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		
 }
 
-void UAuraProjectileSpell::SpawnProjectile()
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
 	/** 如果这是服务器或者是单人游戏则返回真 */
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
@@ -22,13 +22,15 @@ void UAuraProjectileSpell::SpawnProjectile()
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if (CombatInterface)
 	{
-		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+		FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+		SocketLocation.Z = 40.f;
+		Rotation.Pitch = 0.f;
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
-		
-		//TODO: 设置投射物旋转
-		
+		SpawnTransform.SetRotation(Rotation.Quaternion());
+				
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 		   ProjectileClass, 
 		   SpawnTransform, 
@@ -37,6 +39,7 @@ void UAuraProjectileSpell::SpawnProjectile()
 		   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		
 		//TODO: 给投射物设置一个用于造成伤害的游戏效果规格(GameplayEffectSpec)
+		
 		
 		Projectile->FinishSpawning(SpawnTransform);
 	}

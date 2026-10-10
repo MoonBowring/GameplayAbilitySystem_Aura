@@ -24,8 +24,9 @@ void UTargetDataUnderMouse::Activate()
 	else
 	{
 		//如果当前不是本地玩家控制的角色 就应该准备接收客户端传来的目标数据
-		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
-		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();
+		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();//哪个技能
+		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();//哪一次技能激活
+		//当这次技能激活对应的目标数据到达时，请调用我的 OnTargetDataReplicatedCallback() 函数
 		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(SpecHandle, ActivationPredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);
 		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(SpecHandle, ActivationPredictionKey);
 		if (!bCalledDelegate)
