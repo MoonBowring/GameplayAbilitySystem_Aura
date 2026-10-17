@@ -24,6 +24,7 @@ public:
 	static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UObject* WorldContextObject);
 	
 	//初始化角色职业
+	//WorldContextObject 从那个游戏世界获取 GameMode ; CharacterClass 这是哪一种职业的角色 ; Level 按什么等级应用效果 ; ASC 把属性效果应用到哪个角色
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 };

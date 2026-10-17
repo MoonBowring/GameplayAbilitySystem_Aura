@@ -23,6 +23,7 @@ struct FCharacterClassDefaultInfo
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
 };
 
+// 这个类记录的是角色的职业信息
 UCLASS()
 class TOPDOWNVIEWDEMO_API UCharacterClassInfo : public UDataAsset
 {

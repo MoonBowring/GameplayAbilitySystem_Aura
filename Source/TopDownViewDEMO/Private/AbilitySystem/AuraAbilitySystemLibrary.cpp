@@ -50,6 +50,7 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (AuraGameMode == nullptr) return;
 	
+	//返回这个组件的 Actor
 	AActor* AvatarActor = ASC->GetAvatarActor();
 	
 	UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
