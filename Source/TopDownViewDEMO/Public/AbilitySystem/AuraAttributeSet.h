@@ -214,4 +214,7 @@ private:
 	
 	//把这次 GameplayEffect 的 Source Target Context 等信息整理出来
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
+	
+	//显示受击伤害数字
+	void ShowFloatingText(const FEffectProperties& Props, float Damage) const;
 };

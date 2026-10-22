@@ -8,6 +8,8 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -19,6 +21,22 @@ void AAuraPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	
 	CursorTrace();
+}
+
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	//目标角色必须有效 且必须配置好要创建的伤害文字组件类 才能继续执行
+	if (IsValid(TargetCharacter) && DamageTextComponentClass)
+	{
+		//创建一个伤害文字组件 TargetCharacter 新对象应该归入哪个对象层级 
+		//简单来说就是根据 DamageTextComponentClass 指定的类 创建一个新的伤害文字组件 并把它放在 TargetCharacter 对应的对象层级下面 创建完成后 把这个新对象的指针交给 DamageText 变量保存
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		//把刚刚创建的组件注册到 Unreal Engine 的组件系统中 让它能够正常参与游戏运行
+		DamageText->RegisterComponent();
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform)
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
 void AAuraPlayerController::CursorTrace()
