@@ -33,7 +33,7 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
 		//把刚刚创建的组件注册到 Unreal Engine 的组件系统中 让它能够正常参与游戏运行
 		DamageText->RegisterComponent();
-		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform)
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		DamageText->SetDamageText(DamageAmount);
 	}
