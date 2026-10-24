@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 /*
@@ -22,10 +23,13 @@ struct AuraDamageStatics
 	* FGameplayEffectAttributeCaptureDefinition ArmorDef; 保存属性捕获规则，告诉 GAS 要捕获哪个属性、从哪一方捕获等
 	 */
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	
 	AuraDamageStatics()
 	{
+		//捕获定义 UAuraAttributeSet 去哪个属性集找  Armor 具体找那个属性  Target 受击者这一方的属性  false 不使用快照捕获
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
 	}
 };
 
@@ -40,6 +44,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	//告诉 GAS 我的这套伤害计算需要读取受击者的 Armor，请把这个属性捕获定义登记进来
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+	
+	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -65,14 +71,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Armor = 0.f;
-	//AttemptCalculateCapturedAttributeMagnitude 让 GAS 根据之前登记的属性捕获定义，计算出 Armor 属性的数值，并把结果写进 Armor 这个变量
-	// DamageStatics().ArmorDef 用之前登记好的护甲捕获规则  EvaluateParameters 使用刚才准备好的评估条件 Armor 把计算结果写进这个变量
-	const bool bSuccess = ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluateParameters, Armor);
-	Armor = FMath::Max<float>(0.f, Armor);
-	++Armor;
+	//伤害由调用者的幅度设定
+	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	
+	//捕捉目标的格挡几率 判断是否成功格挡 如果格挡成功 伤害减半 （目前）
+	float TargetBlockChance = 0.f;
+	//DamageStatics().BlockChanceDef 格挡几率捕获规则  EvaluateParameters 准备好的评估条件，例如来源方和目标方的标签  TargetBlockChance 用来接收读取结果的变量
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluateParameters, TargetBlockChance);
+	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
+	const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
+	Damage = bBlocked ? Damage / 2.f : Damage;
 	
 	//把结果交给 GAS 对 Armor 属性施加一个加 Armor 的修改
-	const FGameplayModifierEvaluatedData EvaluatedData(DamageStatics().ArmorProperty, EGameplayModOp::Additive, Armor);
+	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 }
