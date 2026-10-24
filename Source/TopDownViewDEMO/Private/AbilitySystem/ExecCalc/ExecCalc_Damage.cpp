@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "Abilities/GameplayAbilityTargetActor.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 /*
@@ -23,12 +24,14 @@ struct AuraDamageStatics
 	* FGameplayEffectAttributeCaptureDefinition ArmorDef; 保存属性捕获规则，告诉 GAS 要捕获哪个属性、从哪一方捕获等
 	 */
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	
 	AuraDamageStatics()
 	{
 		//捕获定义 UAuraAttributeSet 去哪个属性集找  Armor 具体找那个属性  Target 受击者这一方的属性  false 不使用快照捕获
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Target, false)
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
 	}
 };
@@ -44,6 +47,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	//告诉 GAS 我的这套伤害计算需要读取受击者的 Armor，请把这个属性捕获定义登记进来
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+	
+	RelevantAttributesToCapture.Add(DamageStatics().ArmorPenetrationDef);
 	
 	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
 }
@@ -80,7 +85,21 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluateParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
 	const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
+	//判断格挡判定是否成功 如果成功的话就伤害减半
 	Damage = bBlocked ? Damage / 2.f : Damage;
+	
+	float TargetArmor = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluateParameters, TargetArmor);
+	TargetArmor = FMath::Max<float>(TargetArmor, 0.f);
+	
+	float SourceArmorPenetration = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorPenetrationDef, EvaluateParameters, SourceArmorPenetration);
+	SourceArmorPenetration = FMath::Max<float>(SourceArmorPenetration, 0.f);
+	
+	//护甲穿透忽略目标的护甲的百分比 每 1 点护甲穿透，忽略目标 0.25% 的护甲
+	const float EffectiveArmor = TargetArmor *= ( 100 - SourceArmorPenetration * 0.25f ) / 100.f;
+	//护甲会抵消一定比例的伤害 计算穿透后还剩多少护甲 每 1 点有效护甲，让伤害减少 0.333% 左右
+	Damage *= ( 100 - EffectiveArmor * 0.333f ) / 100.f;
 	
 	//把结果交给 GAS 对 Armor 属性施加一个加 Armor 的修改
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
