@@ -80,6 +80,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	//分别获取到攻击者和被攻击者的实际的 AActor 
 	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	
+	//获取攻击来源与攻击收到方的战斗接口 可通过战斗接口获取到双方等级
 	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
 	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
 	
@@ -115,16 +117,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorPenetrationDef, EvaluateParameters, SourceArmorPenetration);
 	SourceArmorPenetration = FMath::Max<float>(SourceArmorPenetration, 0.f);
 	
+	/* 这一段主要是 根据攻击者的等级，从数据表中找到当前等级对应的护甲穿透系数 */
+	//通过 UAuraAbilitySystemLibrary 获取这份角色职业信息 我要计算的是护甲穿透 那么我应该获取的是攻击发起者的属性 也就是 SourceAvatar 
 	UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	//找到名为 ArmorPenetrationCurve 的曲线数据 
 	const FRealCurve* ArmorPenetrationCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("ArmorPenetration"), FString());
-	//通过角色等级来获取角色数值
+	//根据上面获取到的 ArmorPenetrationCurve 并且通过 CombatInterface 获取的角色等级来获取角色数值
 	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
-	//护甲穿透忽略目标的护甲的百分比 每 1 点护甲穿透，忽略目标 0.25% 的护甲
+	//护甲穿透计算： 护甲穿透忽略目标的护甲的百分比 每 1 点护甲穿透，忽略目标 0.25% 的护甲
 	const float EffectiveArmor = TargetArmor * ( 100 - SourceArmorPenetration * ArmorPenetrationCoefficient ) / 100.f;
 	
 	const FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("EffectiveArmor"), FString());
 	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(SourceCombatInterface->GetPlayerLevel());
-	//护甲会抵消一定比例的伤害 计算穿透后还剩多少护甲 每 1 点有效护甲，让伤害减少 0.333% 左右 这个能在 data 表格里面改
+	//护甲计算： 护甲会抵消一定比例的伤害 计算穿透后还剩多少护甲 每 1 点有效护甲，让伤害减少 0.333% 左右 这个能在 data 表格里面改
 	Damage *= ( 100 - EffectiveArmor * EffectiveArmorCoefficient ) / 100.f;
 	
 	float SourceCriticalHitChance = 0.f;
@@ -144,6 +149,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 	//暴击抗性会按照一定的比例降低暴击率
 	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
+	//通过随机数经行暴击判定
 	const bool bCriticalHit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance;
 	
 	//暴击造成双倍伤害

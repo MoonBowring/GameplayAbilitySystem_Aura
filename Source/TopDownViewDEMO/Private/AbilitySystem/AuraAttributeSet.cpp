@@ -93,7 +93,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
 	{
 		//AbilityActorInfo: ASC 用来记录“我是谁、我控制谁、我的 Avatar 是谁”等相关信息的一份角色关系资料
-			Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
+		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
 		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();
 		
 		//如果刚才没有找到 Controller，但是我又有 AvatarActor，那么再尝试从 AvatarActor 找 Controller

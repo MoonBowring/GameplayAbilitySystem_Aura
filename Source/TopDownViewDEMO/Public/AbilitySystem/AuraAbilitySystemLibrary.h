@@ -31,6 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 	
+	//这个函数是用来获取角色的职业信息的
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
 };
