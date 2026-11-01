@@ -28,6 +28,8 @@ public:
 	{
 		FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
 		*NewContext = *this;
+		//复制整个 Context，然后特别把 HitResult 单独复制一份，避免两个 Context 共用同一份命中数据
+		//原因在于 HitResult 在父类中不是直接保存的 而是通过智能指针 TSharedPtr 保存的
 		if (GetHitResult())
 		{
 			// Does a deep copy of the hit result
@@ -56,7 +58,9 @@ struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeT
 {
 	enum
 	{
+		//结构体有自己的网络序列化函数 请使用自己写的 NetSerialize()
 		WithNetSerializer = true,
+		//结构体支持自定义的复制操作 可以使用对应的复制逻辑
 		WithCopy = true
 	};
 };
