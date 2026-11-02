@@ -30,7 +30,7 @@ public:
 	//显示伤害数字 DamageAmount 显示这次打了多少伤害 例如 50 TargetCharacter 伤害打到了哪个角色 也就是数字要显示在哪里
 	//由服务器调用时 让拥有这个 PlayerController 的客户端执行
 	UFUNCTION(Client, Reliable)
-	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
 	
 protected:
 	virtual void BeginPlay() override;

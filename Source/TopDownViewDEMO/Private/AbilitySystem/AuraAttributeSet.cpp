@@ -179,10 +179,9 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 	//判断攻击者和被攻击者是否是同一个对象
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
-		//
 		if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
 		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 	}
 }
