@@ -62,8 +62,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		
 		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 		
+		//可以造成多种效果 所以这里写了个 for
 		for (auto& Pair : DamageTypes)
 		{
+			//根据能力等级从 Map 中获取数值
 			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 			/** 设置游戏玩法标签 用调用者设定大小值 */
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);

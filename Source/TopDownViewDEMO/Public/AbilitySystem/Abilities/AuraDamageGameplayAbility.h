@@ -19,6 +19,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 	
+	//FGameplayTag 伤害类型 FScalableFloat 用来保存伤害根据等级变化的数值
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
 };
