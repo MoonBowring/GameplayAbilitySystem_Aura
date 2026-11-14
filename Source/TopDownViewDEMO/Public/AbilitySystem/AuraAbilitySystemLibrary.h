@@ -29,8 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 	
+	//初始化角色能力
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);
 	
 	//这个函数是用来获取角色的职业信息的
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLiberary|CharacterClassDefaults")

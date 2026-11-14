@@ -86,7 +86,7 @@ void AAuraEnemy::BeginPlay()
 	
 	if (HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 	
 	//开始执行时 通过在 BP_EnemyBase 里面设置的 HealthBar 来获取并设置 Widget 的 Controller 为自身
