@@ -12,9 +12,7 @@
 class UWidgetComponent;
 class UBehaviorTree;
 class AAuraAIController;
-/**
- * 
- */
+
 UCLASS()
 class TOPDOWNVIEWDEMO_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
@@ -32,6 +30,8 @@ public:
 	/** Combat Interface*/
 	virtual int32 GetPlayerLevel() override;
 	virtual void Die() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 	/** End Combat Interface*/
 	
 	UPROPERTY(BlueprintAssignable)
@@ -51,6 +51,10 @@ public:
 	//死后尸体存在时间长度
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.f;
+	
+	//战斗对象
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget;
 	
 protected:
 	virtual void BeginPlay() override;

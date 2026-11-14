@@ -24,4 +24,12 @@ class TOPDOWNVIEWDEMO_API IEnemyInterface
 public:
 	virtual void HightlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
+	
+	//设置战斗目标
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InCombatTarget);
+	
+	//获取战斗目标
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };

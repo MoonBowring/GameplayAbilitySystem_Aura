@@ -20,6 +20,7 @@ public:
 	virtual int32 GetPlayerLevel();
 	virtual FVector GetCombatSocketLocation();
 	
+	//这个函数是更新面向对象
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& Target);
 	
