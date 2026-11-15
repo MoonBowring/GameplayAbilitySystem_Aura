@@ -23,55 +23,51 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	
 	/** GetAvatarActorFromActorInfo 返回执行此能力的物理角色对象 该对象可能为空 */
 	/** 这是判断角色是否实现了战斗接口 只有实现了才能发射 */
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if (CombatInterface)
+	//找到火球发射点
+	FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo());
+	FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+	SocketLocation.Z = 40.f;
+	Rotation.Pitch = 0.f;
+		
+	//计算火球朝那个方向飞
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SocketLocation);
+	SpawnTransform.SetRotation(Rotation.Quaternion());
+		
+	//创建火球
+	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+	   ProjectileClass, //要创建那种发射物
+	   SpawnTransform,  //发射物从那里出生 朝向哪个方向
+	   GetOwningActorFromActorInfo(), //设置发射物的 Owner
+	   Cast<APawn>(GetAvatarActorFromActorInfo()), 
+	   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		
+	//准备火球的伤害数据
+	//获取施法者的能力系统组件 通过使用它来创建伤害用的 GameplayEffectSpec
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	TArray<TWeakObjectPtr<AActor>> Actors;
+	Actors.Add(Projectile);
+	EffectContextHandle.AddActors(Actors);
+	FHitResult HitResult;
+	HitResult.Location = ProjectileTargetLocation;
+	EffectContextHandle.AddHitResult(HitResult);
+		
+	const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+		
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		
+	//可以造成多种效果 所以这里写了个 for
+	for (auto& Pair : DamageTypes)
 	{
-		//找到火球发射点
-		FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-		SocketLocation.Z = 40.f;
-		Rotation.Pitch = 0.f;
-		
-		//计算火球朝那个方向飞
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(SocketLocation);
-		SpawnTransform.SetRotation(Rotation.Quaternion());
-		
-		//创建火球
-		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
-		   ProjectileClass, //要创建那种发射物
-		   SpawnTransform,  //发射物从那里出生 朝向哪个方向
-		   GetOwningActorFromActorInfo(), //设置发射物的 Owner
-		   Cast<APawn>(GetAvatarActorFromActorInfo()), 
-		   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		
-		//准备火球的伤害数据
-		//获取施法者的能力系统组件 通过使用它来创建伤害用的 GameplayEffectSpec
-		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-		EffectContextHandle.SetAbility(this);
-		EffectContextHandle.AddSourceObject(Projectile);
-		TArray<TWeakObjectPtr<AActor>> Actors;
-		Actors.Add(Projectile);
-		EffectContextHandle.AddActors(Actors);
-		FHitResult HitResult;
-		HitResult.Location = ProjectileTargetLocation;
-		EffectContextHandle.AddHitResult(HitResult);
-		
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-		
-		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-		
-		//可以造成多种效果 所以这里写了个 for
-		for (auto& Pair : DamageTypes)
-		{
-			//根据能力等级从 Map 中获取数值
-			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-			/** 设置游戏玩法标签 用调用者设定大小值 */
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-		}
-		
-		Projectile->DamageEffectSpecHandle = SpecHandle;
-		Projectile->FinishSpawning(SpawnTransform);
+		//根据能力等级从 Map 中获取数值
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+		/** 设置游戏玩法标签 用调用者设定大小值 */
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 	}
+		
+	Projectile->DamageEffectSpecHandle = SpecHandle;
+	Projectile->FinishSpawning(SpawnTransform);
 }
