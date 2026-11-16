@@ -22,7 +22,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetCombatSocketLocation();
 	
-	//这个函数是更新面向对象
+	//这个函数是更新面向的对象
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& Target);
 	
@@ -30,4 +30,11 @@ public:
 	UAnimMontage* GetHitReactMontage();
 	
 	virtual void Die() = 0;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
+	
+	//获取调用战斗接口角色
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetAvatar();
 };
