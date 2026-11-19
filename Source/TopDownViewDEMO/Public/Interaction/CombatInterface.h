@@ -33,8 +33,9 @@ class TOPDOWNVIEWDEMO_API ICombatInterface
 public:
 	virtual int32 GetPlayerLevel();
 	
+	//通过蒙太奇的 Tag 获取插槽位置
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetCombatSocketLocation();
+	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);
 	
 	//这个函数是更新面向的对象
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

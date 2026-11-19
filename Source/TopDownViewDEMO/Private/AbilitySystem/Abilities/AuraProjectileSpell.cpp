@@ -24,7 +24,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	/** GetAvatarActorFromActorInfo 返回执行此能力的物理角色对象 该对象可能为空 */
 	/** 这是判断角色是否实现了战斗接口 只有实现了才能发射 */
 	//找到火球发射点
-	FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo());
+	FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(
+		GetAvatarActorFromActorInfo(),
+		FAuraGameplayTags::Get().Montage_Attack_Weapon);
 	FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 	SocketLocation.Z = 40.f;
 	Rotation.Pitch = 0.f;
