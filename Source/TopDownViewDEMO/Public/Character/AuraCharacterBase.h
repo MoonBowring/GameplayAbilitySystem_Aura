@@ -48,9 +48,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;
 	
+	//左手武器插槽名字
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName LeftHandSocketName;
 	
+	//右手武器插槽名字
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName RightHandSocketName;
 	
