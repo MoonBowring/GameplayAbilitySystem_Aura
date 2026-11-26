@@ -9,6 +9,8 @@
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
+#include "Components/CapsuleComponent.h"
+#include "TopDownViewDEMO/TopDownViewDEMO.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -20,6 +22,11 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+	
+	//允许玩家 Capsule 与 Projectile 产生重叠
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	//开启重叠事件
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
